@@ -85,5 +85,5 @@ float Vector::find_average_value() {
     sum += array[i];
   }
 
-  return static_cast<float>(sum / num);
+  return static_cast<float>(sum) / num;
 }
