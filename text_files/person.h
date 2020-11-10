@@ -14,13 +14,15 @@ public:
     int bd_day;
     int bd_month;
     int bd_year;
-
-    std::string sex;
   };
 
   std::vector<data> array;
 
 public:
+  friend std::ofstream &operator<<(std::ofstream &file, Person::data &person);
+
+  friend Person::data &operator>>(std::ifstream &file, Person::data &person);
+
   void load_from_file(const std::string &file_name);
 
   void load_to_file(const std::string &file_name);
@@ -36,8 +38,6 @@ public:
   void sort_by_age();
 
   void display_by_month(int month);
-
-  void the_oldest_man();
 
   void display_by_surname(char first_letter);
 };

@@ -1,27 +1,42 @@
 #include "person.h"
 #include <algorithm>
+#include <exception>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string>
 #include <vector>
 
+std::ofstream &operator<<(std::ofstream &file, Person::data &person) {
+  file << " " << person.surname << " " << person.name << " "
+       << person.patronymic << " " << person.bd_day << " " << person.bd_month
+       << " " << person.bd_year;
+
+  return file;
+}
+
+Person::data &operator>>(std::ifstream &file, Person::data &person) {
+  file >> person.surname >> person.name >> person.patronymic >> person.bd_day >>
+      person.bd_month >> person.bd_year;
+
+  return person;
+}
+
 void Person::load_from_file(const std::string &file_name) {
   std::ifstream file(file_name);
 
-  if (!file.is_open()) {
-    std::cout << "can't open file\n";
+  array.clear();
 
+  if (!file.is_open()) {
+    std::cout << "file error\n";
   } else {
     while (!file.eof()) {
-      data temp;
+      data person;
 
-      file >> temp.surname >> temp.name >> temp.patronymic >> temp.bd_day >>
-          temp.bd_month >> temp.bd_year >> temp.sex;
+      file >> person;
 
-      array.push_back(temp);
+      array.push_back(person);
     }
-
     file.close();
   }
 }
@@ -30,13 +45,11 @@ void Person::load_to_file(const std::string &file_name) {
   std::ofstream file(file_name, std::ios::trunc);
 
   if (!file.is_open()) {
-    std::cout << "can't open file\n";
+    std::cout << "file error\n";
 
   } else {
     for (auto &person : array) {
-      file << " " << person.surname << " " << person.name << " "
-           << person.patronymic << " " << person.bd_day << " "
-           << person.bd_month << " " << person.bd_year << " " << person.sex;
+      file << person;
     }
 
     file.close();
@@ -44,38 +57,59 @@ void Person::load_to_file(const std::string &file_name) {
 }
 
 void Person::add_person() {
-  data temp;
+  data person;
 
-  std::cout << "enter data:\n"
+  std::cout << "\nenter data:\n"
             << "surname: ";
-  std::cin >> temp.surname;
+  std::cin >> person.surname;
   std::cout << "name: ";
-  std::cin >> temp.name;
+  std::cin >> person.name;
   std::cout << "patronymic: ";
-  std::cin >> temp.patronymic;
-  std::cout << "bd_day: ";
-  std::cin >> temp.bd_day;
-  std::cout << "bd_month: ";
-  std::cin >> temp.bd_month;
-  std::cout << "bd_year: ";
-  std::cin >> temp.bd_year;
-  std::cout << "sex: ";
-  std::cin >> temp.sex;
+  std::cin >> person.patronymic;
 
-  array.push_back(temp);
+  try {
+    std::cout << "bd_day: ";
+    std::cin >> person.bd_day;
+
+    if (person.bd_day < 1 || person.bd_day > 31) {
+      throw -1;
+    }
+    std::cout << "bd_month: ";
+    std::cin >> person.bd_month;
+
+    if (person.bd_month < 1 || person.bd_month > 12) {
+      throw -1;
+    }
+    std::cout << "bd_year: ";
+    std::cin >> person.bd_year;
+
+    if (person.bd_year < 1920 || person.bd_year > 2020) {
+      throw -1;
+    }
+
+  } catch (int) {
+    std::cerr << "\nwrong data input\n";
+
+    add_person();
+  }
+
+  array.push_back(person);
 }
 
 void Person::display_person(data &person) {
   std::cout << std::setw(30) << std::left << person.surname << std::setw(30)
             << person.name << std::setw(30) << person.patronymic << std::setw(4)
             << person.bd_day << std::setw(4) << person.bd_month << std::setw(6)
-            << person.bd_year << std::setw(10) << person.sex << "\n";
+            << person.bd_year << "\n";
 }
 
 void Person::display_array() {
+  std::cout << "\n";
+
   for (auto &person : array) {
     display_person(person);
   }
+
   std::cout << "\n";
 }
 
@@ -94,6 +128,8 @@ void Person::sort_by_age() {
 }
 
 void Person::display_by_month(int month) {
+  std::cout << "\n";
+
   for (auto &person : array) {
     if (month == person.bd_month) {
       display_person(person);
@@ -101,17 +137,9 @@ void Person::display_by_month(int month) {
   }
 }
 
-void Person::the_oldest_man() {
-  sort_by_age();
-  for (auto &person : array) {
-    if (person.sex == "male") {
-      std::cout << person.surname << "\n";
-      break;
-    }
-  }
-}
-
 void Person::display_by_surname(char first_letter) {
+  std::cout << "\n";
+
   for (auto &person : array) {
     if (person.surname[0] == first_letter) {
       std::cout << person.surname << "\n";
