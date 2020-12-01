@@ -1,7 +1,6 @@
 #ifndef _LIST_H
 #define _LIST_H
 
-#include <cassert>
 #include <functional>
 #include <initializer_list>
 #include <iostream>
@@ -14,103 +13,68 @@ private:
     Entry *next;
   };
 
-  Entry *head = NULL;
-  Entry *tail = NULL;
+  Entry *head = nullptr;
+  Entry *tail = nullptr;
 
 public:
-  void push_back(T value) {
+  class Iterator {
+  private:
+    Entry *entry;
 
-    auto entry = new Entry{value};
+  public:
+    Iterator(Entry *_entry);
 
-    if (tail == NULL) {
-      tail = entry;
-      head = entry;
-    } else {
-      entry->prev = tail;
-      tail->next = entry;
-      tail = entry;
-    }
+    bool operator==(const Iterator &other) const;
+
+    bool operator!=(const Iterator &other) const;
+
+    T operator*() const;
+
+    Iterator &operator++(int);
   };
 
-  List(std::initializer_list<T> &list) {
-    for (auto &element : list) {
-      push_back(element);
-    }
-  };
+  Iterator begin() const;
 
-  void push_front(T value) {
-    auto entry = new Entry{value};
+  Iterator end() const;
 
-    if (tail == NULL) {
-      tail = entry;
-      head = entry;
-    } else {
-      entry->next = head;
-      head->prev = NULL;
-      head = entry;
-    }
-  };
+  class Is_empty {};
 
-  T pop_back() {
-    assert(tail);
+  class Out_of_range {};
 
-    auto tmp = tail->value;
+  class Bad_alloc {};
 
-    if (tail == head) {
-      delete tail;
-      head = NULL;
-      tail = NULL;
-    } else {
-      auto new_tail = tail->prev;
+  void push_back(T value);
 
-      new_tail->next = NULL;
+  List();
 
-      delete tail;
+  List(std::initializer_list<T> &list);
 
-      tail = new_tail;
-    }
+  List(const T &other);
 
-    return tmp;
-  };
+  void push_front(T value);
 
-  T pop_front() {
-    assert(head);
+  T pop_back();
 
-    auto tmp = head->value;
+  T pop_front();
 
-    if (head == tail) {
-      delete head;
-      head = NULL;
-      tail = NULL;
-    } else {
-      auto new_head = head->next;
+  size_t size();
 
-      new_head->prev = NULL;
+  T &operator[](const size_t &index);
 
-      delete head;
+  void for_each(std::function<void(Entry *)> callback);
 
-      head = new_head;
-    }
-    return tmp;
-  }
+  ~List();
 
-  void for_each(std::function<void(Entry *)> callback) {
-    auto entry = head;
+  void display();
 
-    while (entry->next != NULL) {
-      callback(entry);
-      entry = entry->next;
-    }
-  };
+  void swap(T &t1, T &t2);
 
-  void display() {
-    for_each([](auto entry) { std::cout << entry->value << " "; });
-    std::cout << "\n";
-  }
+  template <class T1> friend void heapify(List<T1> &list, int size, int i);
+
+  template <class T1> friend void heap_sort(List<T1> &list, int size);
 };
 
-void sort();
-
-void find();
+#include "iterator.cpp"
+#include "list.cpp"
 
 #endif

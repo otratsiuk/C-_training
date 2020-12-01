@@ -1,24 +1,30 @@
 #include "list.h"
 
 int main() {
-  std::initializer_list<int> to_initialize = {1, 2, 3, 4, 5, 6, 7};
+  std::initializer_list<int> to_initialize = {12, 25, 3, -4,  5,  76,  57, 10,
+                                              5,  2,  0, 182, 34, 156, 3};
 
   List<int> my_list(to_initialize);
 
   my_list.display();
 
-  my_list.push_front(9);
+  std::cout << my_list[3] << "\n";
+
+  heap_sort(my_list, my_list.size());
 
   my_list.display();
 
-  my_list.pop_back();
-  my_list.pop_back();
-  my_list.pop_back();
-  my_list.pop_front();
-  my_list.pop_front();
-  my_list.pop_front();
+  List<int>::Iterator it = my_list.begin();
 
-  my_list.display();
+  it++;
+  it++;
+  it++;
+
+  std::cout << *it << "\n";
+
+  List<int>::Iterator it_end = my_list.end();
+
+  std::cout << *it_end << "\n";
 
   return 0;
 }
