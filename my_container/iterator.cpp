@@ -11,12 +11,12 @@ template <class T> typename List<T>::Iterator List<T>::end() const {
 template <class T> List<T>::Iterator::Iterator(Entry *_entry) : entry(_entry) {}
 
 template <class T>
-bool List<T>::Iterator::operator==(const Iterator &other) const {
+bool List<T>::Iterator::operator==(Iterator const &other) const {
   return this == &other;
 }
 
 template <class T>
-bool List<T>::Iterator::operator!=(const Iterator &other) const {
+bool List<T>::Iterator::operator!=(Iterator const &other) const {
   return this != &other;
 }
 

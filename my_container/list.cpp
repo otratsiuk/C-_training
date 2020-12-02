@@ -1,21 +1,16 @@
 #include "list.h"
 
 template <class T> void List<T>::push_back(T value) {
-  try {
-    auto entry = new Entry{value};
 
-    if (tail == nullptr) {
-      tail = entry;
-      head = entry;
-    } else {
-      entry->prev = tail;
-      tail->next = entry;
-      tail = entry;
-    }
-  }
+  auto entry = new Entry{value};
 
-  catch (Bad_alloc()) {
-    std::cout << "bad_alloc\n";
+  if (tail == nullptr) {
+    tail = entry;
+    head = entry;
+  } else {
+    entry->prev = tail;
+    tail->next = entry;
+    tail = entry;
   }
 }
 
@@ -33,74 +28,64 @@ template <class T> List<T>::List(const T &other) {
 }
 
 template <class T> void List<T>::push_front(T value) {
-  try {
-    auto entry = new Entry{value};
 
-    if (tail == nullptr) {
-      tail = entry;
-      head = entry;
-    } else {
-      entry->next = head;
-      head->prev = nullptr;
-      head = entry;
-    }
-  } catch (Bad_alloc()) {
-    std::cout << "bad_alloc\n";
+  auto entry = new Entry{value};
+
+  if (head == nullptr) {
+    tail = entry;
+    head = entry;
+  } else {
+    entry->next = head;
+    head->prev = nullptr;
+    head = entry;
   }
 }
 
 template <class T> T List<T>::pop_back() {
-  try {
-    if (tail == nullptr) {
-      throw Is_empty();
-    }
-
-    auto tmp = tail->value;
-
-    if (tail == head) {
-      delete tail;
-      head = nullptr;
-      tail = nullptr;
-    } else {
-      auto new_tail = tail->prev;
-
-      new_tail->next = nullptr;
-
-      delete tail;
-
-      tail = new_tail;
-    }
-    return tmp;
-  } catch (Out_of_range()) {
-    std::cout << "out_of_range\n";
+  if (tail == nullptr) {
+    throw Is_empty();
   }
+
+  auto tmp = tail->value;
+
+  if (tail == head) {
+    delete tail;
+    head = nullptr;
+    tail = nullptr;
+  } else {
+    auto new_tail = tail->prev;
+
+    new_tail->next = nullptr;
+
+    delete tail;
+
+    tail = new_tail;
+  }
+  return tmp;
 }
 
 template <class T> T List<T>::pop_front() {
-  try {
-    if (head == nullptr) {
-      throw Is_empty();
-    }
 
-    auto tmp = head->value;
-
-    if (head == tail) {
-      delete head;
-      head = nullptr;
-      tail = nullptr;
-    } else {
-      auto new_head = head->next;
-
-      new_head->prev = nullptr;
-
-      delete head;
-
-      head = new_head;
-    }
-    return tmp;
-  } catch (Out_of_range()) {
-    std::cout << "out_of_range\n";
+  if (head == nullptr) {
+    throw Is_empty();
   }
+
+  auto tmp = head->value;
+
+  if (head == tail) {
+    delete head;
+    head = nullptr;
+    tail = nullptr;
+  } else {
+    auto new_head = head->next;
+
+    new_head->prev = nullptr;
+
+    delete head;
+
+    head = new_head;
+  }
+  return tmp;
 }
 
 template <class T> size_t List<T>::size() {

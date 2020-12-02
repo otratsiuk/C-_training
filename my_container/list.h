@@ -16,6 +16,8 @@ private:
   Entry *head = nullptr;
   Entry *tail = nullptr;
 
+  void for_each(std::function<void(Entry *)> callback);
+
 public:
   class Iterator {
   private:
@@ -24,9 +26,9 @@ public:
   public:
     Iterator(Entry *_entry);
 
-    bool operator==(const Iterator &other) const;
+    bool operator==(Iterator const &other) const;
 
-    bool operator!=(const Iterator &other) const;
+    bool operator!=(Iterator const &other) const;
 
     T operator*() const;
 
@@ -60,8 +62,6 @@ public:
   size_t size();
 
   T &operator[](const size_t &index);
-
-  void for_each(std::function<void(Entry *)> callback);
 
   ~List();
 
