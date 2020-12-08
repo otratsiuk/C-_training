@@ -9,11 +9,7 @@ String::String(const char *const s) {
   std::cout << "constructor String(const char *const s)\n";
 }
 
-String::String(String &&other) {
-  length = other.length;
-  str = new char[length];
-  std::strcpy(str, other.str);
-
+String::String(String &&other) : length(other.length), str(other.str) {
   other.length = 0;
   other.str = nullptr;
 
