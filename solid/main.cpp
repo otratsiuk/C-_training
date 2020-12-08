@@ -1,6 +1,7 @@
 #include "shape.h"
 #include <iomanip>
 #include <iostream>
+#include <vector>
 
 int main() {
 
@@ -29,11 +30,22 @@ int main() {
             << "square perimeter: " << std::setw(15) << square.perimeter()
             << "\n\n";
 
-  circle.draw(100, 300);
+  //
+  Shape *shapes[5] = {new Circle(60), new Rectangle(45, 30), new Square(60),
+                      new Circle(77), new Rectangle(50, 20)};
 
-  rectangle.draw(200, 50);
+  double sum_square = 0;
 
-  square.draw(300, 250);
+  std::cout << "array of shapes: \n";
+  for (int i = 0; i < 5; i++) {
+    shapes[i]->draw(300, 200);
+
+    std::cout << "square " << i << ": " << shapes[i]->square() << "\n";
+
+    sum_square += shapes[i]->square();
+  }
+
+  std::cout << "general square for array of shapes: " << sum_square << "\n";
 
   return 0;
 }
